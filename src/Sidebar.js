@@ -1,23 +1,44 @@
 import React from "react";
 
-function Sidebar() {
+function Sidebar({
+  notes, 
+  onAddNote, 
+  onDeleteNote, 
+  activeNote, 
+  setActiveNote
+}) {
+
+  const sortedNotes = notes.sort((a,b) => b.lastModified - a.lastModified)
+
 return (
   <div className="app-sidebar">
     <div className="app-sidebar-header">
-      <h1>Notes</h1>
-      <button>Add</button>
+      <h1>My Notes</h1>
+      <button onClick={onAddNote}>Add new</button>
     </div>
     <div className="app-sidebar-notes">
-      <div className="app-sidebar-note">
+    {sortedNotes.map((note) => (
+      <div 
+        className={`app-sidebar-note ${note.id === activeNote && "active"}`} 
+        onClick={()=> setActiveNote(note.id)}
+      >
         <div className="sidebar-note-title">
-          <strong> TITLE </strong>
-          <button>Delete</button>
+          <strong> {note.title} </strong>
+          <button onClick={() => onDeleteNote(note.id)}>Delete</button>
         </div>
-        <p>Note preview</p>
-        <small className="note-meta">Last modified [date]</small>
+        <p>{note.body && note.body.substr(0,100) + "..." }</p>
+        <small className="note-meta">Last modified {new Date(note.lastModified).toLocaleDateString("en-GB", {
+          day: 'numeric',
+          month: 'short',
+          year:'numeric',
+          hour:"2-digit",
+          minute:"2-digit",
+          second:'2-digit'
+        })}</small>
       </div>
+    ))}
     </div>
-  </div>
+  // </div>
   );
 }
 
